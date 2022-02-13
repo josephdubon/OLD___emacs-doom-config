@@ -33,7 +33,7 @@
   ;; Global settings (defaults)
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
         doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  (load-theme 'doom-dracula t)
+  (load-theme 'doom-nord t)
 
   ;; or for treemacs users
   (setq doom-themes-treemacs-theme "doom-colors") ; use "doom-colors" for less minimal icon theme
@@ -48,8 +48,25 @@
                 :family "MesloLGS NF"
                 :size 12))
 
-;; Hide Org markup indicators.
+;; Org indicators.
+(setq org-refile-targets '((nil :maxlevel . 9)
+(org-agenda-files :maxlevel . 9)))
+(setq org-outline-path-complete-in-steps nil)         ; Refile in a single go
+(setq org-refile-use-outline-path t)                  ; Show full paths for refiling
+(setq org-refile-allow-creating-parent-nodes (quote confirm))
+(setq org-pretty-entities t)
 (setq org-hide-emphasis-markers t)
+(setq org-fontify-whole-heading-line t)
+(setq org-fontify-done-headline t)
+(setq org-fontify-quote-and-verse-blocks t)
+(setq org-tags-column 0)
+(setq org-src-fontify-natively t)
+(setq org-edit-src-content-indentation 0)
+(setq org-src-tab-acts-natively t)
+(setq org-src-preserve-indentation t)
+
+(setq org-log-done 'time)
+
 
 ; Custom Org markers
 (setq
@@ -70,18 +87,103 @@
       org-journal-file-format "%Y-%m-%d.org"
       )
 
+(use-package! org-agenda
+  :defer t
+  :init
+
+  (setq org-agenda-files '("~/org/" "~/org/roam/" "~/org/journal/"))
+
+  :config
+  (setq org-habit-show-habits-only-for-today t)
+  (setq org-agenda-include-deadlines t)
+  (setq org-agenda-dim-blocked-tasks 'invisible)
+  (setq org-agenda-tags-column 0)
+  (setq org-todo-keywords '((sequence
+                           "TODO"
+                           "PROJ"
+                           "NEXT(n)"
+                           "PROG(p!)"
+                           "SOMEDAY"
+                           "|"
+                           "DONE(d)"
+                           "CANCEL(c@)"
+                           "DELEGATED(@)")
+                          (sequence
+                           "IDEA"
+                           "GOAL"
+                           "|"
+                           "DUD(@)")
+                          (sequence
+                           "RD"
+                           "RDING"
+                           "RDNOTE"
+                           "TMPDROP"
+                           "|"
+                           "DROP"
+                           "FNSHED")))
+  (setq org-agenda-time-grid
+        (quote
+         ((daily today remove-match)
+          (0500, 0600, 0700 0800 0900 1000 1100 1200 1300 1400 1500 1600 1700 1800 1900 2000 2100 2200 2300)
+          "......" "------------")))
+  )
+
 ;; org-super-agenda provides great grouping and customization features to make
 ;; agenda mode easier to use.
 (use-package! org-super-agenda
   :after org-agenda
-  :config
-  (setq org-super-agenda-groups '((:auto-dir-name t)))
-  (org-super-agenda-mode))
+  :init
 
-;; Capturing and Notetaking
-;; First, I define where all my Org-captured things can be found.
+  (setq org-agenda-custom-commands '(
+                                     ("r" "Main View"
+                                      ((agenda "" ((org-agenda-span 'day)
+                                                   (org-agenda-start-day "+0d")
+                                                   (org-agenda-overriding-header "")
+                                                   (org-super-agenda-groups
+                                                    '((:name "Today"
+                                                       :time-grid t
+                                                       :date today
+                                                       :order 1
+                                                       :scheduled today
+                                                       :todo "TODAY")))))
+                                       (alltodo "" ((org-agenda-overriding-header "")
+                                                    (org-super-agenda-groups
+                                                     '(
+                                                       (:discard (:habit))                                                       (:tag "BibleProject")
+                                                       (:tag "DailyRoutine")
+                                                       (:tag "AlchemyBeautyStudio")
+                                                       (:tag "Americoders")
+                                                       (:tag "BibleProject")
+                                                       (:tag "JosephDubonCom")
+                                                       (:tag "Personal")
+                                                       (:tag "Family")
+                                                       (:tag "SystemConfig")
+                                                       (:todo "PROJ")
+                                                       (:todo "PROG")
+                                                       (:todo "NEXT")
+                                                       (:todo "WAIT")
+                                                       (:todo "RD")
+                                                       (:name "Important" :priority "A")
+                                                       (:todo "TODO")
+                                                       (:todo "GOAL")
+                                                       (:discard (:todo "IDEA"))
+                                                       (:discard (:todo "RD"))
+                                                       (:discard (:todo "TMPDROP"))
+                                                       (:discard (:todo "SOMEDAY"))
+                                                       ))))))
 
-(setq org-agenda-files '("~/org" "~/org/journal" "~/org/roam"))
+                                     ("w" "Someday and Idea"
+                                      ((alltodo "" ((org-agenda-overriding-header "")
+                                                    (org-super-agenda-groups
+                                                     '(
+                                                       (:todo "IDEA")
+                                                       (:todo "SOMEDAY")
+                                                       (:discard (:not "IDEA"))
+                                                       )
+                                                     )))))))
+  ;;:config
+  (org-super-agenda-mode)
+  )
 
 ;; set path for projectile
 (setq projectile-project-search-path '("~/Matrix"))
@@ -93,8 +195,6 @@
         org-agenda-block-separator #x2501
         org-agenda-compact-blocks t
         org-agenda-start-with-log-mode t)
-  (with-eval-after-load 'org-journal
-    (setq org-agenda-files '("~/org" "~/org/journal" "~/org/roam")))
   (setq org-agenda-clockreport-parameter-plist
         (quote (:link t :maxlevel 5 :fileskip0 t :compact t :narrow 80)))
   (setq org-agenda-deadline-faces
