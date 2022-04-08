@@ -29,19 +29,24 @@
 ;; (setq doom-theme 'doom-dracula) ;; << This line enables the theme
 
 (use-package doom-themes
-  :config
+ :config
   ;; Global settings (defaults)
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-        doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  (load-theme 'doom-nord t)
+       doom-themes-enable-italic t) ; if nil, italics is universally disabled
+ (load-theme 'doom-tokyo-night t)
 
-  ;; or for treemacs users
-  (setq doom-themes-treemacs-theme "doom-colors") ; use "doom-colors" for less minimal icon theme
+  ; or for treemacs users
+ (setq doom-themes-treemacs-theme "doom-colors") ; use "doom-colors" for less minimal icon theme
 
-  (doom-themes-treemacs-config)
-  ;; Corrects (and improves) org-mode's native fontification.
-  (doom-themes-org-config)
-  )
+ (doom-themes-treemacs-config)
+  ; Corrects (and improves) org-mode's native fontification.
+ (doom-themes-org-config)
+ )
+
+; (setq
+;  doom-theme 'iceberg
+;  ;; the rest of your config ...
+;  )
 
 ;;; Set custom font -match your IDE and terminal
 (setq doom-font(font-spec
@@ -67,10 +72,10 @@
 
 (setq org-log-done 'time)
 
-
+1
 ; Custom Org markers
 (setq
-    org-superstar-headline-bullets-list '("⁖" "◉" "○" "✸" "✿"))
+    org-superstar-headline-bullets-list '("⌘" "♔" "♕" "♗" "♘" "♙"))
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -140,7 +145,7 @@
                                                    (org-agenda-start-day "+0d")
                                                    (org-agenda-overriding-header "")
                                                    (org-super-agenda-groups
-                                                    '((:name "Today"
+                                                    '((:name "What are you doing today to make the world a better place?"
                                                        :time-grid t
                                                        :date today
                                                        :order 1
@@ -149,15 +154,16 @@
                                        (alltodo "" ((org-agenda-overriding-header "")
                                                     (org-super-agenda-groups
                                                      '(
-                                                       (:discard (:habit))                                                       (:tag "BibleProject")
-                                                       (:tag "DailyRoutine")
+                                                       (:discard (:habit))
+                                                       (:tag "Work")
+                                                       (:tag "Personal")
                                                        (:tag "AlchemyBeautyStudio")
                                                        (:tag "Americoders")
                                                        (:tag "BibleProject")
                                                        (:tag "JosephDubonCom")
-                                                       (:tag "Personal")
                                                        (:tag "Family")
                                                        (:tag "SystemConfig")
+                                                       (:tag "DailyRoutine")
                                                        (:todo "PROJ")
                                                        (:todo "PROG")
                                                        (:todo "NEXT")
